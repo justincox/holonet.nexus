@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Holonet Channel Guide | Justin Cox</title>
+    <meta name="description" content="Justin Cox — Writer Guy. Holonet channel guide with links to articles, books, newsletter, and socials." />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg">
+      <div class="bg-grid"></div>
+      <div class="bg-scanlines"></div>
+    </div>
+
+    <main class="wrap">
+      <header class="hero">
+        <p class="eyebrow">Holonet Channel Guide</p>
+        <h1>Justin Cox</h1>
+        <p class="tagline">Writer Guy</p>
+        <div class="meta">
+          <span class="pill" data-node>Node: HN-77</span>
+          <span class="pill" data-sector>Sector: Core</span>
+          <span class="pill">Status: Online</span>
+        </div>
+      </header>
+
+      <section class="panel dispatch" aria-live="polite">
+        <div class="panel-header">
+          <h2>Dispatch</h2>
+          <p>Latest transmission from the field.</p>
+        </div>
+        <div class="dispatch-card" data-dispatch>
+          <div class="dispatch-thumb" aria-hidden="true"></div>
+          <div class="dispatch-body">
+            <p class="dispatch-kicker">Loading latest transmission...</p>
+            <h3 class="dispatch-title">Stand by</h3>
+            <p class="dispatch-excerpt">Fetching the most recent Holonet update.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Outposts</h2>
+          <p>Primary destinations across the system.</p>
+        </div>
+        <div class="link-grid">
+          <a class="link-card" href="https://JustinCox.com" target="_blank" rel="noreferrer">
+            <span class="link-title">Blog</span>
+            <span class="link-sub">JustinCox.com</span>
+          </a>
+          <a class="link-card" href="https://justincox.com/book/" target="_blank" rel="noreferrer">
+            <span class="link-title">Book</span>
+            <span class="link-sub">Writing, impact, and purpose</span>
+          </a>
+          <a class="link-card" href="https://justincox.com/subscribe/" target="_blank" rel="noreferrer">
+            <span class="link-title">Newsletter</span>
+            <span class="link-sub">Weekly dispatches</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Relays</h2>
+          <p>Social and broadcast channels.</p>
+        </div>
+        <div class="link-grid">
+          <a class="link-card" href="https://justincox.com/mastodon/" target="_blank" rel="noreferrer">
+            <span class="link-title">Mastodon</span>
+            <span class="link-sub">Federated network</span>
+          </a>
+          <a class="link-card" href="https://instagram.com/justincox/" target="_blank" rel="noreferrer">
+            <span class="link-title">Instagram</span>
+            <span class="link-sub">Visual logbook</span>
+          </a>
+          <a class="link-card" href="https://www.linkedin.com/in/justin-cox-nonprofit-writer/" target="_blank" rel="noreferrer">
+            <span class="link-title">LinkedIn</span>
+            <span class="link-sub">Professional dossier</span>
+          </a>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p class="footer-label">Transmission End</p>
+        <p class="footer-copy">Holonet.nexus • curated by <a href="https://justincox.com/" target="_blank" rel="noreferrer">Justin Cox</a></p>
+      </footer>
+    </main>
+
+    <script>
+      (function () {
+        var nodeEl = document.querySelector("[data-node]");
+        var sectorEl = document.querySelector("[data-sector]");
+
+        if (nodeEl) {
+          var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          var pickLetter = function () {
+            return letters[Math.floor(Math.random() * letters.length)];
+          };
+          var pickDigit = function () {
+            return Math.floor(Math.random() * 10);
+          };
+          var formats = [
+            function () {
+              return "HN-" + pickDigit() + pickLetter() + pickDigit();
+            },
+            function () {
+              return "HN-" + pickLetter() + pickDigit() + pickDigit();
+            },
+            function () {
+              return "HN-" + pickDigit() + pickDigit() + pickLetter();
+            },
+            function () {
+              return "HN-" + pickDigit() + pickDigit() + "-" + pickLetter() + pickDigit();
+            },
+            function () {
+              return "HN-" + pickLetter() + "-" + pickDigit() + pickDigit() + pickDigit();
+            }
+          ];
+          var nodeCode = formats[Math.floor(Math.random() * formats.length)]();
+          nodeEl.textContent = "Node: " + nodeCode;
+        }
+
+        if (sectorEl) {
+          var sectors = [
+            "Core Worlds",
+            "Colonies",
+            "Inner Rim",
+            "Mid Rim",
+            "Outer Rim",
+            "Expansion Region",
+            "Unknown Regions"
+          ];
+          var pick = sectors[Math.floor(Math.random() * sectors.length)];
+          sectorEl.textContent = "Sector: " + pick;
+        }
+      })();
+    </script>
+
+    <script>
+      (function () {
+        var dispatchEl = document.querySelector("[data-dispatch]");
+        if (!dispatchEl) return;
+
+        var ghostRoot = "https://justincox.com";
+        var apiKey = "b498ed50fad70b488f50a1fca0";
+        var url =
+          ghostRoot +
+          "/ghost/api/content/posts/?key=" +
+          apiKey +
+          "&limit=1&include=tags" +
+          "&fields=title,excerpt,feature_image,url,primary_tag" +
+          "&filter=primary_tag:-[reviews,write-now]";
+
+        fetch(url)
+          .then(function (res) {
+            if (!res.ok) throw new Error("Dispatch fetch failed");
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || !data.posts || !data.posts.length) return;
+
+            var post = data.posts[0];
+            var title = post.title || "Latest dispatch";
+            var excerpt = post.excerpt || "Transmission received.";
+            var link = post.url || ghostRoot;
+            var image = post.feature_image || "";
+
+            dispatchEl.innerHTML =
+              '<a class="dispatch-link" href="' +
+              link +
+              '" target="_blank" rel="noreferrer">' +
+              (image
+                ? '<div class="dispatch-thumb" style="background-image:url(' +
+                  image +
+                  ')"></div>'
+                : '<div class="dispatch-thumb no-image" aria-hidden="true"></div>') +
+              '<div class="dispatch-body">' +
+              '<p class="dispatch-kicker">Latest transmission</p>' +
+              "<h3 class=\"dispatch-title\">" +
+              title +
+              "</h3>" +
+              "<p class=\"dispatch-excerpt\">" +
+              excerpt +
+              "</p>" +
+              "<span class=\"dispatch-cta\"><span class=\"dispatch-cta-text\">Read Transmission</span></span>" +
+              "</div>" +
+              "</a>";
+          })
+          .catch(function () {
+            dispatchEl.innerHTML =
+              '<a class="dispatch-link" href="' +
+              ghostRoot +
+              '" target="_blank" rel="noreferrer">' +
+              '<div class="dispatch-thumb no-image" aria-hidden="true"></div>' +
+              '<div class="dispatch-body">' +
+              '<p class="dispatch-kicker">Dispatch offline</p>' +
+              "<h3 class=\"dispatch-title\">No signal detected</h3>" +
+              "<p class=\"dispatch-excerpt\">Jump to the archive for previous transmissions.</p>" +
+              "<span class=\"dispatch-cta\"><span class=\"dispatch-cta-text\">Read Transmission</span></span>" +
+              "</div>" +
+              "</a>";
+          });
+      })();
+    </script>
+  </body>
+</html>
