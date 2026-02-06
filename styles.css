@@ -191,6 +191,10 @@ body {
   overflow: hidden;
 }
 
+.dispatch-card + .dispatch-card {
+  margin-top: 16px;
+}
+
 .dispatch-link {
   display: grid;
   grid-template-columns: minmax(160px, 220px) 1fr;
