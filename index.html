@@ -28,15 +28,25 @@
 
       <section class="panel dispatch" aria-live="polite">
         <div class="panel-header">
-          <h2>Dispatch</h2>
-          <p>Latest transmission from the field.</p>
+          <h2>Dispatches</h2>
+          <p>Latest and featured transmissions from the field.</p>
         </div>
-        <div class="dispatch-card" data-dispatch>
-          <div class="dispatch-thumb" aria-hidden="true"></div>
-          <div class="dispatch-body">
-            <p class="dispatch-kicker">Loading latest transmission...</p>
-            <h3 class="dispatch-title">Stand by</h3>
-            <p class="dispatch-excerpt">Fetching the most recent Holonet update.</p>
+        <div class="dispatch-stack">
+          <div class="dispatch-card" data-dispatch>
+            <div class="dispatch-thumb" aria-hidden="true"></div>
+            <div class="dispatch-body">
+              <p class="dispatch-kicker">Loading latest transmission...</p>
+              <h3 class="dispatch-title">Stand by</h3>
+              <p class="dispatch-excerpt">Fetching the most recent Holonet update.</p>
+            </div>
+          </div>
+          <div class="dispatch-card" data-featured-dispatch>
+            <div class="dispatch-thumb no-image" aria-hidden="true"></div>
+            <div class="dispatch-body">
+              <p class="dispatch-kicker">Loading featured transmission...</p>
+              <h3 class="dispatch-title">Stand by</h3>
+              <p class="dispatch-excerpt">Searching the archive for a featured signal.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -141,68 +151,128 @@
 
     <script>
       (function () {
-        var dispatchEl = document.querySelector("[data-dispatch]");
-        if (!dispatchEl) return;
+        var latestDispatchEl = document.querySelector("[data-dispatch]");
+        var featuredDispatchEl = document.querySelector("[data-featured-dispatch]");
+        if (!latestDispatchEl && !featuredDispatchEl) return;
 
         var ghostRoot = "https://justincox.com";
         var apiKey = "b498ed50fad70b488f50a1fca0";
-        var url =
-          ghostRoot +
-          "/ghost/api/content/posts/?key=" +
-          apiKey +
-          "&limit=1&include=tags" +
-          "&fields=title,excerpt,feature_image,url,primary_tag" +
-          "&filter=primary_tag:-[reviews,write-now]";
+        var escapeHtml = function (value) {
+          return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        };
 
-        fetch(url)
-          .then(function (res) {
-            if (!res.ok) throw new Error("Dispatch fetch failed");
-            return res.json();
-          })
-          .then(function (data) {
-            if (!data || !data.posts || !data.posts.length) return;
+        var buildDispatchCard = function (post, kicker) {
+          var title = post.title || "Transmission received";
+          var excerpt = post.excerpt || "Open channel for full details.";
+          var link = post.url || ghostRoot;
+          var image = post.feature_image || "";
 
-            var post = data.posts[0];
-            var title = post.title || "Latest dispatch";
-            var excerpt = post.excerpt || "Transmission received.";
-            var link = post.url || ghostRoot;
-            var image = post.feature_image || "";
+          return (
+            '<a class="dispatch-link" href="' +
+            escapeHtml(link) +
+            '" target="_blank" rel="noreferrer">' +
+            (image
+              ? '<div class="dispatch-thumb" style="background-image:url(' +
+                escapeHtml(image) +
+                ')"></div>'
+              : '<div class="dispatch-thumb no-image" aria-hidden="true"></div>') +
+            '<div class="dispatch-body">' +
+            '<p class="dispatch-kicker">' +
+            escapeHtml(kicker) +
+            "</p>" +
+            '<h3 class="dispatch-title">' +
+            escapeHtml(title) +
+            "</h3>" +
+            '<p class="dispatch-excerpt">' +
+            escapeHtml(excerpt) +
+            "</p>" +
+            '<span class="dispatch-cta"><span class="dispatch-cta-text">Read Transmission</span></span>' +
+            "</div>" +
+            "</a>"
+          );
+        };
 
-            dispatchEl.innerHTML =
-              '<a class="dispatch-link" href="' +
-              link +
-              '" target="_blank" rel="noreferrer">' +
-              (image
-                ? '<div class="dispatch-thumb" style="background-image:url(' +
-                  image +
-                  ')"></div>'
-                : '<div class="dispatch-thumb no-image" aria-hidden="true"></div>') +
-              '<div class="dispatch-body">' +
-              '<p class="dispatch-kicker">Latest transmission</p>' +
-              "<h3 class=\"dispatch-title\">" +
-              title +
-              "</h3>" +
-              "<p class=\"dispatch-excerpt\">" +
-              excerpt +
-              "</p>" +
-              "<span class=\"dispatch-cta\"><span class=\"dispatch-cta-text\">Read Transmission</span></span>" +
-              "</div>" +
-              "</a>";
-          })
-          .catch(function () {
-            dispatchEl.innerHTML =
-              '<a class="dispatch-link" href="' +
-              ghostRoot +
-              '" target="_blank" rel="noreferrer">' +
-              '<div class="dispatch-thumb no-image" aria-hidden="true"></div>' +
-              '<div class="dispatch-body">' +
-              '<p class="dispatch-kicker">Dispatch offline</p>' +
-              "<h3 class=\"dispatch-title\">No signal detected</h3>" +
-              "<p class=\"dispatch-excerpt\">Jump to the archive for previous transmissions.</p>" +
-              "<span class=\"dispatch-cta\"><span class=\"dispatch-cta-text\">Read Transmission</span></span>" +
-              "</div>" +
-              "</a>";
-          });
+        var buildDispatchFallback = function (kicker, title, excerpt) {
+          return (
+            '<a class="dispatch-link" href="' +
+            ghostRoot +
+            '" target="_blank" rel="noreferrer">' +
+            '<div class="dispatch-thumb no-image" aria-hidden="true"></div>' +
+            '<div class="dispatch-body">' +
+            '<p class="dispatch-kicker">' +
+            escapeHtml(kicker) +
+            "</p>" +
+            '<h3 class="dispatch-title">' +
+            escapeHtml(title) +
+            "</h3>" +
+            '<p class="dispatch-excerpt">' +
+            escapeHtml(excerpt) +
+            "</p>" +
+            '<span class="dispatch-cta"><span class="dispatch-cta-text">Read Transmission</span></span>' +
+            "</div>" +
+            "</a>"
+          );
+        };
+
+        if (latestDispatchEl) {
+          var latestUrl =
+            ghostRoot +
+            "/ghost/api/content/posts/?key=" +
+            apiKey +
+            "&limit=1&include=tags" +
+            "&fields=title,excerpt,feature_image,url,primary_tag" +
+            "&filter=primary_tag:-[reviews,write-now]";
+
+          fetch(latestUrl)
+            .then(function (res) {
+              if (!res.ok) throw new Error("Latest dispatch fetch failed");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!data || !data.posts || !data.posts.length) throw new Error("No latest post found");
+              latestDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Transmission");
+            })
+            .catch(function () {
+              latestDispatchEl.innerHTML = buildDispatchFallback(
+                "Dispatch offline",
+                "No signal detected",
+                "Jump to the archive for previous transmissions."
+              );
+            });
+        }
+
+        if (featuredDispatchEl) {
+          var featuredUrl =
+            ghostRoot +
+            "/ghost/api/content/posts/?key=" +
+            apiKey +
+            "&limit=12" +
+            "&fields=title,excerpt,feature_image,url" +
+            "&filter=tag:featured";
+
+          fetch(featuredUrl)
+            .then(function (res) {
+              if (!res.ok) throw new Error("Featured dispatch fetch failed");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!data || !data.posts || !data.posts.length) throw new Error("No featured posts found");
+              var randomIndex = Math.floor(Math.random() * data.posts.length);
+              featuredDispatchEl.innerHTML = buildDispatchCard(data.posts[randomIndex], "Featured Transmission");
+            })
+            .catch(function () {
+              featuredDispatchEl.innerHTML = buildDispatchFallback(
+                "Featured Transmission",
+                "No featured signal detected",
+                "Browse the archive for earlier transmissions."
+              );
+            });
+        }
       })();
     </script>
   </body>

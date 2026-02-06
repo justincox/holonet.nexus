@@ -179,6 +179,11 @@ body {
   position: relative;
 }
 
+.dispatch-stack {
+  display: grid;
+  gap: 16px;
+}
+
 .dispatch-card {
   border: 1px solid rgba(72, 225, 255, 0.3);
   border-radius: 16px;
