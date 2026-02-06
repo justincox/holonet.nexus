@@ -219,22 +219,26 @@
           );
         };
 
+        var latestPostId = null;
+        var latestPromise = Promise.resolve();
+
         if (latestDispatchEl) {
           var latestUrl =
             ghostRoot +
             "/ghost/api/content/posts/?key=" +
             apiKey +
             "&limit=1&include=tags" +
-            "&fields=title,excerpt,feature_image,url,primary_tag" +
+            "&fields=id,title,excerpt,feature_image,url,primary_tag" +
             "&filter=primary_tag:-[reviews,write-now]";
 
-          fetch(latestUrl)
+          latestPromise = fetch(latestUrl)
             .then(function (res) {
               if (!res.ok) throw new Error("Latest dispatch fetch failed");
               return res.json();
             })
             .then(function (data) {
               if (!data || !data.posts || !data.posts.length) throw new Error("No latest post found");
+              latestPostId = data.posts[0].id || null;
               latestDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Transmission");
             })
             .catch(function () {
@@ -247,31 +251,40 @@
         }
 
         if (featuredDispatchEl) {
-          var featuredUrl =
-            ghostRoot +
-            "/ghost/api/content/posts/?key=" +
-            apiKey +
-            "&limit=12" +
-            "&fields=title,excerpt,feature_image,url" +
-            "&filter=tag:featured";
+          var loadFeaturedDispatch = function () {
+            var featuredUrl =
+              ghostRoot +
+              "/ghost/api/content/posts/?key=" +
+              apiKey +
+              "&limit=100" +
+              "&fields=id,title,excerpt,feature_image,url" +
+              "&filter=tag:featured";
 
-          fetch(featuredUrl)
-            .then(function (res) {
-              if (!res.ok) throw new Error("Featured dispatch fetch failed");
-              return res.json();
-            })
-            .then(function (data) {
-              if (!data || !data.posts || !data.posts.length) throw new Error("No featured posts found");
-              var randomIndex = Math.floor(Math.random() * data.posts.length);
-              featuredDispatchEl.innerHTML = buildDispatchCard(data.posts[randomIndex], "Featured Transmission");
-            })
-            .catch(function () {
-              featuredDispatchEl.innerHTML = buildDispatchFallback(
-                "Featured Transmission",
-                "No featured signal detected",
-                "Browse the archive for earlier transmissions."
-              );
-            });
+            fetch(featuredUrl)
+              .then(function (res) {
+                if (!res.ok) throw new Error("Featured dispatch fetch failed");
+                return res.json();
+              })
+              .then(function (data) {
+                if (!data || !data.posts || !data.posts.length) throw new Error("No featured posts found");
+                var posts = data.posts;
+                var eligiblePosts = posts.filter(function (post) {
+                  return post.id !== latestPostId;
+                });
+                var pool = eligiblePosts.length ? eligiblePosts : posts;
+                var randomIndex = Math.floor(Math.random() * pool.length);
+                featuredDispatchEl.innerHTML = buildDispatchCard(pool[randomIndex], "Featured Transmission");
+              })
+              .catch(function () {
+                featuredDispatchEl.innerHTML = buildDispatchFallback(
+                  "Featured Transmission",
+                  "No featured signal detected",
+                  "Browse the archive for earlier transmissions."
+                );
+              });
+          };
+
+          latestPromise.then(loadFeaturedDispatch, loadFeaturedDispatch);
         }
       })();
     </script>
