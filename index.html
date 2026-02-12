@@ -6,7 +6,7 @@
     <title>Holonet Channel Guide | Justin Cox</title>
     <meta name="description" content="Justin Cox — Writer Guy. Holonet channel guide with links to articles, books, newsletter, and socials." />
     <link rel="me" href="https://social.lol/@justincox" />
-    <link rel="stylesheet" href="styles.css?v=20260206-1" />
+    <link rel="stylesheet" href="styles.css?v=20260212-8" />
   </head>
   <body>
     <div class="bg">
@@ -36,16 +36,28 @@
             <div class="dispatch-thumb" aria-hidden="true"></div>
             <div class="dispatch-body">
               <p class="dispatch-kicker">Loading latest transmission...</p>
-              <h3 class="dispatch-title">Stand by</h3>
-              <p class="dispatch-excerpt">Fetching the most recent Holonet update.</p>
+              <h3 class="dispatch-title">
+                <span class="dispatch-title-source">Stand by</span>
+                <span class="dispatch-title-translation" aria-hidden="true">Stand by</span>
+              </h3>
+              <p class="dispatch-excerpt">
+                <span class="dispatch-excerpt-source">Fetching the most recent Holonet update.</span>
+                <span class="dispatch-excerpt-translation" aria-hidden="true">Fetching the most recent Holonet update.</span>
+              </p>
             </div>
           </div>
           <div class="dispatch-card" data-featured-dispatch>
             <div class="dispatch-thumb no-image" aria-hidden="true"></div>
             <div class="dispatch-body">
               <p class="dispatch-kicker">Loading featured transmission...</p>
-              <h3 class="dispatch-title">Stand by</h3>
-              <p class="dispatch-excerpt">Searching the archive for a featured signal.</p>
+              <h3 class="dispatch-title">
+                <span class="dispatch-title-source">Stand by</span>
+                <span class="dispatch-title-translation" aria-hidden="true">Stand by</span>
+              </h3>
+              <p class="dispatch-excerpt">
+                <span class="dispatch-excerpt-source">Searching the archive for a featured signal.</span>
+                <span class="dispatch-excerpt-translation" aria-hidden="true">Searching the archive for a featured signal.</span>
+              </p>
             </div>
           </div>
         </div>
@@ -58,16 +70,34 @@
         </div>
         <div class="link-grid">
           <a class="link-card" href="https://JustinCox.com" target="_blank" rel="noreferrer">
-            <span class="link-title">Blog</span>
-            <span class="link-sub">JustinCox.com</span>
+            <span class="link-title">
+              <span class="link-copy-source">Website</span>
+              <span class="link-copy-translation" aria-hidden="true">Website</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">JustinCox.com</span>
+              <span class="link-copy-translation" aria-hidden="true">JustinCox.com</span>
+            </span>
           </a>
           <a class="link-card" href="https://justincox.com/book/" target="_blank" rel="noreferrer">
-            <span class="link-title">Book</span>
-            <span class="link-sub">Writing, impact, and purpose</span>
+            <span class="link-title">
+              <span class="link-copy-source">Book</span>
+              <span class="link-copy-translation" aria-hidden="true">Book</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">Write Now.</span>
+              <span class="link-copy-translation" aria-hidden="true">Write Now.</span>
+            </span>
           </a>
           <a class="link-card" href="https://justincox.com/subscribe/" target="_blank" rel="noreferrer">
-            <span class="link-title">Newsletter</span>
-            <span class="link-sub">Weekly dispatches</span>
+            <span class="link-title">
+              <span class="link-copy-source">Newsletter</span>
+              <span class="link-copy-translation" aria-hidden="true">Newsletter</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">This Just In.</span>
+              <span class="link-copy-translation" aria-hidden="true">This Just In.</span>
+            </span>
           </a>
         </div>
       </section>
@@ -79,16 +109,34 @@
         </div>
         <div class="link-grid">
           <a class="link-card" href="https://justincox.com/mastodon/" target="_blank" rel="noreferrer">
-            <span class="link-title">Mastodon</span>
-            <span class="link-sub">Federated network</span>
+            <span class="link-title">
+              <span class="link-copy-source">Mastodon</span>
+              <span class="link-copy-translation" aria-hidden="true">Mastodon</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">Federated network</span>
+              <span class="link-copy-translation" aria-hidden="true">Federated network</span>
+            </span>
           </a>
           <a class="link-card" href="https://instagram.com/justincox/" target="_blank" rel="noreferrer">
-            <span class="link-title">Instagram</span>
-            <span class="link-sub">Visual logbook</span>
+            <span class="link-title">
+              <span class="link-copy-source">Instagram</span>
+              <span class="link-copy-translation" aria-hidden="true">Instagram</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">Visual logbook</span>
+              <span class="link-copy-translation" aria-hidden="true">Visual logbook</span>
+            </span>
           </a>
           <a class="link-card" href="https://www.linkedin.com/in/justin-cox-nonprofit-writer/" target="_blank" rel="noreferrer">
-            <span class="link-title">LinkedIn</span>
-            <span class="link-sub">Professional dossier</span>
+            <span class="link-title">
+              <span class="link-copy-source">LinkedIn</span>
+              <span class="link-copy-translation" aria-hidden="true">LinkedIn</span>
+            </span>
+            <span class="link-sub">
+              <span class="link-copy-source">Professional dossier</span>
+              <span class="link-copy-translation" aria-hidden="true">Professional dossier</span>
+            </span>
           </a>
         </div>
       </section>
@@ -165,6 +213,32 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#39;");
         };
+        var buildDispatchExcerpt = function (excerpt) {
+          var safeExcerpt = escapeHtml(excerpt);
+          return (
+            '<p class="dispatch-excerpt">' +
+            '<span class="dispatch-excerpt-source">' +
+            safeExcerpt +
+            "</span>" +
+            '<span class="dispatch-excerpt-translation" aria-hidden="true">' +
+            safeExcerpt +
+            "</span>" +
+            "</p>"
+          );
+        };
+        var buildDispatchTitle = function (title) {
+          var safeTitle = escapeHtml(title);
+          return (
+            '<h3 class="dispatch-title">' +
+            '<span class="dispatch-title-source">' +
+            safeTitle +
+            "</span>" +
+            '<span class="dispatch-title-translation" aria-hidden="true">' +
+            safeTitle +
+            "</span>" +
+            "</h3>"
+          );
+        };
 
         var buildDispatchCard = function (post, kicker) {
           var title = post.title || "Transmission received";
@@ -185,12 +259,8 @@
             '<p class="dispatch-kicker">' +
             escapeHtml(kicker) +
             "</p>" +
-            '<h3 class="dispatch-title">' +
-            escapeHtml(title) +
-            "</h3>" +
-            '<p class="dispatch-excerpt">' +
-            escapeHtml(excerpt) +
-            "</p>" +
+            buildDispatchTitle(title) +
+            buildDispatchExcerpt(excerpt) +
             '<span class="dispatch-cta"><span class="dispatch-cta-text">Read Transmission</span></span>' +
             "</div>" +
             "</a>"
@@ -207,12 +277,8 @@
             '<p class="dispatch-kicker">' +
             escapeHtml(kicker) +
             "</p>" +
-            '<h3 class="dispatch-title">' +
-            escapeHtml(title) +
-            "</h3>" +
-            '<p class="dispatch-excerpt">' +
-            escapeHtml(excerpt) +
-            "</p>" +
+            buildDispatchTitle(title) +
+            buildDispatchExcerpt(excerpt) +
             '<span class="dispatch-cta"><span class="dispatch-cta-text">Read Transmission</span></span>' +
             "</div>" +
             "</a>"
