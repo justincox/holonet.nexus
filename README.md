@@ -4,7 +4,8 @@ Personal landing page for [holonet.nexus](https://holonet.nexus) — a Star Wars
 
 ## What it does
 
-- Displays the latest and a randomly selected featured post fetched from [JustinCox.com](https://justincox.com) via the Ghost Content API
+- Displays the latest post, a randomly selected featured post, the latest Write Now interview, and the latest review — all fetched from [JustinCox.com](https://justincox.com) via the Ghost Content API
+- Shows "Status: Offline" in red if any API call fails
 - Links to primary outposts (website, book, newsletter) and social relays (Mastodon, Instagram, LinkedIn)
 - Randomizes a node ID and galaxy sector on each page load
 - Animates visible text through a "decoding" translation effect
@@ -22,6 +23,11 @@ Plain HTML, CSS, and vanilla JS. No build step, no dependencies. Deployed via Gi
 | `CNAME` | Custom domain for GitHub Pages |
 
 ## Changelog
+
+### 2026-03-24 | 1.4 | The Expanded Dispatches Edit
+- Added Latest Interview card (fetches most recent `write-now` post) and Latest Review card (fetches most recent `reviews` post) to the Dispatches section.
+- Updated Ghost Content API key.
+- Added offline status indicator: Status pill flips to "Offline" in red if any API call falls back to its error state.
 
 ### 2026-02-28 | 1.3 | The Documentation Cleanup Edit
 - Added the project README with the site overview, stack notes, and file inventory.
