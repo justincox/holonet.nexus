@@ -22,7 +22,7 @@
         <div class="meta">
           <span class="pill" data-node>Node: HN-77</span>
           <span class="pill" data-sector>Sector: Core</span>
-          <span class="pill">Status: Online</span>
+          <span class="pill" data-status>Status: Online</span>
         </div>
       </header>
 
@@ -315,6 +315,13 @@
 
         var interviewDispatchEl = document.querySelector("[data-interview-dispatch]");
         var reviewDispatchEl = document.querySelector("[data-review-dispatch]");
+        var statusEl = document.querySelector("[data-status]");
+        var markOffline = function () {
+          if (statusEl) {
+            statusEl.textContent = "Status: Offline";
+            statusEl.style.color = "#ff4444";
+          }
+        };
 
         var latestPostId = null;
         var latestPromise = Promise.resolve();
@@ -339,6 +346,7 @@
               latestDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Transmission");
             })
             .catch(function () {
+              markOffline();
               latestDispatchEl.innerHTML = buildDispatchFallback(
                 "Dispatch offline",
                 "No signal detected",
@@ -373,6 +381,7 @@
                 featuredDispatchEl.innerHTML = buildDispatchCard(pool[randomIndex], "Featured Transmission");
               })
               .catch(function () {
+                markOffline();
                 featuredDispatchEl.innerHTML = buildDispatchFallback(
                   "Featured Transmission",
                   "No featured signal detected",
@@ -403,6 +412,7 @@
               interviewDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Interview");
             })
             .catch(function () {
+              markOffline();
               interviewDispatchEl.innerHTML = buildDispatchFallback(
                 "Latest Interview",
                 "No signal detected",
@@ -430,6 +440,7 @@
               reviewDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Review");
             })
             .catch(function () {
+              markOffline();
               reviewDispatchEl.innerHTML = buildDispatchFallback(
                 "Latest Review",
                 "No signal detected",
