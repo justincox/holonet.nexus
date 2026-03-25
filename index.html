@@ -60,6 +60,34 @@
               </p>
             </div>
           </div>
+          <div class="dispatch-card" data-interview-dispatch>
+            <div class="dispatch-thumb no-image" aria-hidden="true"></div>
+            <div class="dispatch-body">
+              <p class="dispatch-kicker">Loading latest interview...</p>
+              <h3 class="dispatch-title">
+                <span class="dispatch-title-source">Stand by</span>
+                <span class="dispatch-title-translation" aria-hidden="true">Stand by</span>
+              </h3>
+              <p class="dispatch-excerpt">
+                <span class="dispatch-excerpt-source">Fetching the latest Write Now interview.</span>
+                <span class="dispatch-excerpt-translation" aria-hidden="true">Fetching the latest Write Now interview.</span>
+              </p>
+            </div>
+          </div>
+          <div class="dispatch-card" data-review-dispatch>
+            <div class="dispatch-thumb no-image" aria-hidden="true"></div>
+            <div class="dispatch-body">
+              <p class="dispatch-kicker">Loading latest review...</p>
+              <h3 class="dispatch-title">
+                <span class="dispatch-title-source">Stand by</span>
+                <span class="dispatch-title-translation" aria-hidden="true">Stand by</span>
+              </h3>
+              <p class="dispatch-excerpt">
+                <span class="dispatch-excerpt-source">Fetching the latest review transmission.</span>
+                <span class="dispatch-excerpt-translation" aria-hidden="true">Fetching the latest review transmission.</span>
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -285,6 +313,9 @@
           );
         };
 
+        var interviewDispatchEl = document.querySelector("[data-interview-dispatch]");
+        var reviewDispatchEl = document.querySelector("[data-review-dispatch]");
+
         var latestPostId = null;
         var latestPromise = Promise.resolve();
 
@@ -351,6 +382,60 @@
           };
 
           latestPromise.then(loadFeaturedDispatch, loadFeaturedDispatch);
+        }
+
+        if (interviewDispatchEl) {
+          var interviewUrl =
+            ghostRoot +
+            "/ghost/api/content/posts/?key=" +
+            apiKey +
+            "&limit=1" +
+            "&fields=id,title,excerpt,feature_image,url" +
+            "&filter=primary_tag:write-now";
+
+          fetch(interviewUrl)
+            .then(function (res) {
+              if (!res.ok) throw new Error("Interview dispatch fetch failed");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!data || !data.posts || !data.posts.length) throw new Error("No interview post found");
+              interviewDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Interview");
+            })
+            .catch(function () {
+              interviewDispatchEl.innerHTML = buildDispatchFallback(
+                "Latest Interview",
+                "No signal detected",
+                "Browse the Write Now archive for author interviews."
+              );
+            });
+        }
+
+        if (reviewDispatchEl) {
+          var reviewUrl =
+            ghostRoot +
+            "/ghost/api/content/posts/?key=" +
+            apiKey +
+            "&limit=1" +
+            "&fields=id,title,excerpt,feature_image,url" +
+            "&filter=primary_tag:reviews";
+
+          fetch(reviewUrl)
+            .then(function (res) {
+              if (!res.ok) throw new Error("Review dispatch fetch failed");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!data || !data.posts || !data.posts.length) throw new Error("No review post found");
+              reviewDispatchEl.innerHTML = buildDispatchCard(data.posts[0], "Latest Review");
+            })
+            .catch(function () {
+              reviewDispatchEl.innerHTML = buildDispatchFallback(
+                "Latest Review",
+                "No signal detected",
+                "Browse the archive for previous reviews."
+              );
+            });
         }
       })();
     </script>
