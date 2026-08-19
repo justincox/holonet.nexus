@@ -1,1 +1,4 @@
 .DS_Store
+
+# Nova editor workspace settings
+.nova/
